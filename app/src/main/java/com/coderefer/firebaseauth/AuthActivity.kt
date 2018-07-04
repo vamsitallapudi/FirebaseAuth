@@ -16,6 +16,7 @@ class AuthActivity : AppCompatActivity() {
     lateinit var cardView: CardView
     lateinit var bgView: View
     lateinit var tvLogin: View
+    lateinit var tick: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,8 +26,8 @@ class AuthActivity : AppCompatActivity() {
         cardView.setOnClickListener {
             tvLogin = findViewById(R.id.tv_login)
             tvLogin.visibility = View.INVISIBLE
-            scaleView(cardView, cardView.height.toFloat(), cardView.height.toFloat()/2)
-            revealAnimation()
+            tick = findViewById(R.id.animation_view_2)
+            scaleView(cardView)
         }
     }
 
@@ -64,9 +65,9 @@ class AuthActivity : AppCompatActivity() {
         }
     }
 
-    fun scaleView(v: View, startScale: Float, endScale: Float) {
+    fun scaleView(v: View) {
         val anim = ScaleAnimation(
-                1f, .1f, // Start and end values for the X axis scaling
+                1f, 0f, // Start and end values for the X axis scaling
                 1f, 1f, // Start and end values for the Y axis scaling
                 Animation.RELATIVE_TO_SELF, .5f, // Pivot point of X scaling
                 Animation.RELATIVE_TO_SELF, .5f) // Pivot point of Y scaling
@@ -77,17 +78,18 @@ class AuthActivity : AppCompatActivity() {
         v.startAnimation(anim)
     }
 
-    class AnimationListenerer: Animation.AnimationListener{
+    inner class AnimationListenerer: Animation.AnimationListener{
         override fun onAnimationRepeat(p0: Animation?) {
 
         }
 
         override fun onAnimationEnd(p0: Animation?) {
-
+            tick.visibility = View.VISIBLE
+            revealAnimation()
         }
 
         override fun onAnimationStart(p0: Animation?) {
+            tick.visibility = View.GONE
         }
-
     }
 }
