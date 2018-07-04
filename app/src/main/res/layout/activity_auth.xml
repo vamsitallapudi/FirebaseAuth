@@ -34,9 +34,9 @@
         app:lottie_rawRes="@raw/weeve_logo" />
 
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animation_view_2"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:id="@+id/logging_animation"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -45,9 +45,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_password"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/tick_tick" />
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false"
+        app:lottie_rawRes="@raw/loading_success_fail" />
 
 
 

@@ -8,15 +8,18 @@ import android.view.ViewAnimationUtils
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.os.Build
+import android.os.Handler
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
+import com.airbnb.lottie.LottieAnimationView
 
 class AuthActivity : AppCompatActivity() {
 
     lateinit var cardView: CardView
     lateinit var bgView: View
     lateinit var tvLogin: View
-    lateinit var tick: View
+    lateinit var successFailAnimation: LottieAnimationView
+    var success = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,12 +29,52 @@ class AuthActivity : AppCompatActivity() {
         cardView.setOnClickListener {
             tvLogin = findViewById(R.id.tv_login)
             tvLogin.visibility = View.INVISIBLE
-            tick = findViewById(R.id.animation_view_2)
+            successFailAnimation = findViewById(R.id.logging_animation)
+            addSuccessFailAnimationListener()
             scaleView(cardView)
         }
     }
 
+    private fun addSuccessFailAnimationListener() {
+        successFailAnimation.addAnimatorListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(p0: Animator?) {
+
+            }
+
+            override fun onAnimationCancel(p0: Animator?) {
+
+            }
+
+            override fun onAnimationEnd(p0: Animator?) {
+
+                if (success) {
+                    successFailAnimation.cancelAnimation()
+                    successFailAnimation.setMinAndMaxFrame(200, 400)
+                    successFailAnimation.playAnimation()
+                } else {
+                    successFailAnimation.setMinAndMaxFrame(600, 800)
+                }
+                if (successFailAnimation.frame ==200) {
+                    handler.postDelayed({
+                        successFailAnimation.visibility = View.GONE
+                        revealAnimation()
+                    },3500)
+                    success = false
+                }
+            }
+
+            override fun onAnimationStart(p0: Animator?) {
+
+            }
+
+        })
+    }
+
     private fun revealAnimation() {
+
+        /**
+         *  to create circular reveal animation for next screen transition
+         * */
         bgView = findViewById(R.id.revealView)
 
         // Check if the runtime version is at least Lollipop
@@ -78,18 +121,26 @@ class AuthActivity : AppCompatActivity() {
         v.startAnimation(anim)
     }
 
+    private val handler: Handler
+        get() {
+            val handler = Handler()
+            return handler
+        }
+
     inner class AnimationListenerer: Animation.AnimationListener{
         override fun onAnimationRepeat(p0: Animation?) {
 
         }
 
         override fun onAnimationEnd(p0: Animation?) {
-            tick.visibility = View.VISIBLE
-            revealAnimation()
+            successFailAnimation.setMinAndMaxFrame(0, 200)
+            successFailAnimation.playAnimation()
+            successFailAnimation.visibility = View.VISIBLE
+
         }
 
         override fun onAnimationStart(p0: Animation?) {
-            tick.visibility = View.GONE
+            successFailAnimation.visibility = View.VISIBLE
         }
     }
 }
