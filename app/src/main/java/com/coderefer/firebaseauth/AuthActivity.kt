@@ -20,7 +20,8 @@ class AuthActivity : AppCompatActivity() {
     lateinit var bgView: View
     lateinit var tvLogin: View
     lateinit var successFailAnimation: LottieAnimationView
-    var success = true
+    var success = false
+    var animComplete = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,13 +31,13 @@ class AuthActivity : AppCompatActivity() {
         cardView.setOnClickListener {
             tvLogin = findViewById(R.id.tv_login)
             tvLogin.visibility = View.INVISIBLE
-            addSuccessFailAnimationListener()
+            successFailAnimation.addAnimatorListener(animatorListener())
             scaleView(cardView)
         }
     }
 
-    private fun addSuccessFailAnimationListener() {
-        successFailAnimation.addAnimatorListener(object : Animator.AnimatorListener {
+    private fun animatorListener(): Animator.AnimatorListener {
+        return object : Animator.AnimatorListener {
             override fun onAnimationRepeat(p0: Animator?) {
 
             }
@@ -49,20 +50,25 @@ class AuthActivity : AppCompatActivity() {
 
                 val startSuccessFrame = 300
                 val endSuccessFrame = 390
+                val startFailureFrame = 700
+                val endFailureFrame = 850
+                successFailAnimation.cancelAnimation()
+                if(!animComplete){
+                    if (success) {
+                        successFailAnimation.setMinAndMaxFrame(startSuccessFrame, endSuccessFrame)
 
-                if (success) {
-                    successFailAnimation.cancelAnimation()
-                    successFailAnimation.setMinAndMaxFrame(startSuccessFrame, endSuccessFrame)
-                    successFailAnimation.playAnimation()
+                    } else if (!success) {
+                        successFailAnimation.setMinAndMaxFrame(startFailureFrame, endFailureFrame)
+                    }
                     successFailAnimation.repeatCount = 0 // to make sure animation doesn't repeat
-                } else {
-                    successFailAnimation.setMinAndMaxFrame(700, 800)
-                }
-                successFailAnimation.addAnimatorUpdateListener {
-                    if (successFailAnimation.frame == 375) {
-                        successFailAnimation.visibility = GONE
-                        revealAnimation()
-                        success = false
+                    successFailAnimation.playAnimation()
+                    successFailAnimation.addAnimatorUpdateListener { // -> to check the progress of animation
+                        if (successFailAnimation.frame == 375 || successFailAnimation.frame == 820) {
+                            successFailAnimation.visibility = GONE
+                            revealAnimation()
+                            success = false
+                            animComplete = true
+                        }
                     }
                 }
             }
@@ -71,7 +77,7 @@ class AuthActivity : AppCompatActivity() {
 
             }
 
-        })
+        }
     }
 
     private fun revealAnimation() {
